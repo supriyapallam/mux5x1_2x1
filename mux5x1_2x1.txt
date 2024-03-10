@@ -1,0 +1,37 @@
+//Design Code
+module mux21(output out,input s1,in0,in1);
+  assign out=s1?in1:in0;
+endmodule
+
+module mux5x1(output out,input s2,s1,s0,a,b,c,d,e);
+  wire o1,o2,o3;
+  mux21 a1(o1,so,a,b);
+  mux21 a2(o2,so,c,d);
+  mux21 a3(o3,s1,o1,o2);
+  mux21 a4(out,s2,o3,e);
+endmodule
+
+//Test Bench Code
+module test();
+  reg s2,s1,s0,a,b,c,d,e;
+  wire out;
+  integer i;
+  mux5x1 DUT(out,s2,s1,s0,a,b,c,d,e);
+  initial
+    begin
+      for(i=0;i<256;i=i+1)
+        begin
+          {s2,s1,s0,a,b,c,d,e}=i;
+          #3;
+        end
+    end
+  initial
+    begin
+      $dumpfile("test.vcd");
+      $dumpvars(1);
+    end
+  initial
+    begin
+      $monitor("time=%0t,s2=%b,s1=%b,s0=%b,a=%b,b=%b,c=%b,d=%b,e=%b,out=%b",$time,s2,s1,s0,a,b,c,d,e,out);
+    end
+endmodule
